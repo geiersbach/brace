@@ -7683,7 +7683,7 @@ var Document = function(textOrLines) {
     oop.implement(this, EventEmitter);
     this.setValue = function(text) {
         var len = this.getLength() - 1;
-        this.remove(new Range(0, 0, len, this.getLine(len).length));
+        this.remove(new Range(0, 0, len, this.getLine(len).length), true);
         this.insert({row: 0, column: 0}, text);
     };
     this.getValue = function() {
@@ -7859,12 +7859,13 @@ var Document = function(textOrLines) {
         
         return this.clonePos(end);
     };
-    this.remove = function(range) {
+    this.remove = function(range, isFromSetValue) {
         var start = this.clippedPos(range.start.row, range.start.column);
         var end = this.clippedPos(range.end.row, range.end.column);
         this.applyDelta({
             start: start,
             end: end,
+            isFromSetValue: isFromSetValue,
             action: "remove",
             lines: this.getLinesForRange({start: start, end: end})
         });
